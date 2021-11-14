@@ -40,10 +40,10 @@ class TelegramTest {
     @DisplayName("Añadir Usuario")
     void addUser() {
         Telegram telegram=new Telegram();
-        AbstractUser user1 = new User(telegram, "Francisco");
-        assertEquals(1,telegram.users.size());
-        telegram.addUser(user1);
-        assertEquals(2,telegram.users.size());
+        AbstractUser mockUser=mock(AbstractUser.class);
+        int initialcount =telegram.users.size();
+        telegram.addUser(mockUser);
+        assertTrue(initialcount < telegram.users.size());
 
     }
 
@@ -53,9 +53,9 @@ class TelegramTest {
         Telegram telegram=new Telegram();
 
         AbstractUser user1 = new User(telegram, "Francisco");
+        int initialcount =telegram.users.size();
         telegram.addUser(user1);
-        assertEquals(2,telegram.users.size());
         telegram.removeUser(user1);
-        assertEquals(1,telegram.users.size());
+        assertTrue(initialcount == telegram.users.size());
     }
 }

@@ -1,9 +1,11 @@
 package com.example.proyectotesting.patterns.behavioral.iterator;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Iterator se inicia correctamente")
 class MainTest {
 
     @Test

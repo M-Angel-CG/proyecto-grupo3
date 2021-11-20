@@ -1,6 +1,7 @@
 package com.example.proyectotesting.controller.rest;
 
 import com.example.proyectotesting.entities.Manufacturer;
+import com.example.proyectotesting.entities.Product;
 import com.example.proyectotesting.service.ManufacturerService;
 
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RestController
 public class ManufacturerRestController {
 
-    private ManufacturerService manufacturerService;
+    private final ManufacturerService manufacturerService;
 
     public ManufacturerRestController (ManufacturerService manufacturerService) {
         this.manufacturerService = manufacturerService;
@@ -42,14 +43,14 @@ public class ManufacturerRestController {
 
     @PutMapping("/api/manufacturers")
     public ResponseEntity<Manufacturer> update(@RequestBody Manufacturer manufacturer){
-        if(manufacturer.getId() == null)
+        if(manufacturer.getId() != null)
             return ResponseEntity.badRequest().build();
+
         Manufacturer result = manufacturerService.save(manufacturer);
         return ResponseEntity.ok(result);
     }
 
-
-    @DeleteMapping("/api/manufactures")
+    @DeleteMapping("/api/manufacturers}")
     public ResponseEntity<Manufacturer> deleteAll(){
 
         if(manufacturerService.deleteAll())
@@ -58,4 +59,16 @@ public class ManufacturerRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
+    @DeleteMapping("/api/manufacturers/{id}")
+    public ResponseEntity<Manufacturer> delete(@PathVariable Long id){
+
+        if(!manufacturerService.existsById(id)) // si no hay id entonces NO se borra
+            return ResponseEntity.notFound().build(); // HTTP Status es 404
+
+        boolean result = manufacturerService.deleteById(id);
+        if (result)
+            return ResponseEntity.noContent().build(); // HTTP Status es 204 NO CONTENT
+        else
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // HTTP Status es 409 CONFLICT
+    }
 }

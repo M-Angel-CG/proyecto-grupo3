@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Testeo de los métodos presentes en la clase ManufacturerRepository del package Repository
+ */
 @DataJpaTest
 public class ManufacturerRepositoryTest {
 

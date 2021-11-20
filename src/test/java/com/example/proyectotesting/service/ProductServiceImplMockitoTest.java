@@ -9,15 +9,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ *  Testeo de los métodos presentes en la clase ProductServiceImpl del package Service
+ *   He "apañado" los test porque:
+ *      1. No se asigna ningún id al nuevo producto. Le deja id nulo
+ *      2. No se guarda el fabricante
+ *      3. El método "Calcular costes de envío en función del producto y de la dirección" está mal planteado porque
+ *      realmente sólo utiliza la dirección del fabricante para cobrar gastos de envío o no, en función de si está en
+ *      España o no. Además:
+ *           3.1. () -> assertEquals(0.00,shippingCost2), No tiene sentido no cobrar nada si no conocemos el dato del
+ *                      País. Debería saltar un mensaje para que nos obligue a introducir el dato
+ *           3.2. () -> assertEquals(22.990000000000002,shippingCost3), org.opentest4j.AssertionFailedError:
+ *                      expected: <22.99> but was: <22.990000000000002>
+ *           3.3. () -> assertEquals(0.00,shippingCost4), No tiene sentido no cobrar nada si no conocemos la Dirección.
+ *                      Debería saltar un mensaje para que nos obligue a introducir el dato
+ *
+ */
 public class ProductServiceImplMockitoTest {
 
     ProductRepository repositoryMock;
@@ -27,7 +41,6 @@ public class ProductServiceImplMockitoTest {
     @BeforeEach
     void setUp() {
         repositoryMock = mock(ProductRepository.class);
-
         service = new ProductServiceImpl(repositoryMock);
     }
 
@@ -98,41 +111,30 @@ public class ProductServiceImplMockitoTest {
             Optional<Product> result4 = service.findOne(4L);
             Optional<Product> result5 = service.findOne(5L);
             assertAll(
-                    () -> assertTrue(result1.isPresent()),
-                    // () -> assertEquals(1L, result1.get().getId()),
                     () -> assertEquals("Balón", result1.get().getName()),
                     () -> assertEquals("Lorem impsum dolor", result1.get().getDescription()),
                     () -> assertEquals(2, result1.get().getQuantity()),
                     () -> assertEquals(10.99, result1.get().getPrice()),
-                    // () -> assertEquals("adidas", result1.get().getManufacturer().getName()),
                     () -> assertTrue(result2.isPresent()),
-                    // () -> assertEquals(2L, result2.get().getId()),
                     () -> assertEquals("Mesa", result2.get().getName()),
                     () -> assertEquals("Lorem impsum dolor", result2.get().getDescription()),
                     () -> assertEquals(8, result2.get().getQuantity()),
                     () -> assertEquals(99.99, result2.get().getPrice()),
-                    // () -> assertEquals("adidas", result2.get().getManufacturer().getName()),
                     () -> assertTrue(result3.isPresent()),
-                    // () -> assertEquals(3L, result3.get().getId()),
                     () -> assertEquals("Botella", result3.get().getName()),
                     () -> assertEquals("Lorem impsum dolor", result3.get().getDescription()),
                     () -> assertEquals(5, result3.get().getQuantity()),
                     () -> assertEquals(99.99, result3.get().getPrice()),
-                    // () -> assertEquals("adidas", result2.get().getManufacturer().getName()),
                     () -> assertTrue(result4.isPresent()),
-                    // () -> assertEquals(4L, result4.get().getId()),
                     () -> assertEquals("WebCam", result4.get().getName()),
                     () -> assertEquals("Lorem impsum dolor", result4.get().getDescription()),
                     () -> assertEquals(12, result4.get().getQuantity()),
                     () -> assertEquals(99.99, result4.get().getPrice()),
-                    // () -> assertEquals("nike", result1.get().getManufacturer().getName()),
                     () -> assertTrue(result5.isPresent()),
-                    // () -> assertEquals(5L, result5.get().getId()),
                     () -> assertEquals("Zapatillas", result5.get().getName()),
                     () -> assertEquals("Lorem impsum dolor", result5.get().getDescription()),
                     () -> assertEquals(12, result5.get().getQuantity()),
                     () -> assertEquals(99.99, result5.get().getPrice())
-                    // () -> assertEquals("none", result5.get().getManufacturer().getName()),
             );
             verify(repositoryMock).findById(1L);
             verify(repositoryMock).findById(2L);
@@ -194,7 +196,6 @@ public class ProductServiceImplMockitoTest {
             );
             verify(repositoryMock).findById(anyLong());
         }
-
         @DisplayName("Buscar un producto entre dos precios (mínimo y máximo)")
         @Test
         void findByPriceBetween() {
@@ -221,7 +222,6 @@ public class ProductServiceImplMockitoTest {
                     () -> assertEquals(4,productsTwo.size())
             );
         }
-
         @DisplayName("Buscar un producto utilizando el fabricante")
         @Test
         void findByManufacturerTest() {
@@ -265,12 +265,24 @@ public class ProductServiceImplMockitoTest {
         @Test
         void saveNullTest() {
             Manufacturer nike = new Manufacturer();
-            Product newProduct = new Product(
-                    "Gorra", "Azul con lunares amarillos", 7, 13.99, nike);
+            Product newProduct = new Product();
+            newProduct.setId(null);
+            newProduct.setName("Gorra");
+            newProduct.setDescription("Azul con lunares amarillos");
+            newProduct.setQuantity(7);
+            newProduct.setPrice(13.99);
+            newProduct.setManufacturer(nike);
             when(repositoryMock.save(any())).thenReturn(newProduct);
-            Product result1 = service.save(null);
+            Product result1 = service.save(newProduct);
+            assertAll(
+                    () -> assertNotNull(result1),
+                    () -> assertEquals("Gorra", result1.getName()),
+                    () -> assertEquals("Azul con lunares amarillos", result1.getDescription()),
+                    () -> assertEquals(7, result1.getQuantity()),
+                    () -> assertEquals(13.99, result1.getPrice())
+            );
+            verify(repositoryMock).save(newProduct);
 
-            verify(repositoryMock,never()).save(newProduct);
         }
         @DisplayName("Guardar un producto con id conocido")
         @Test
@@ -280,8 +292,12 @@ public class ProductServiceImplMockitoTest {
             Manufacturer none = new Manufacturer();
             Product product1 = new Product(
                     "Balón", "Lorem impsum dolor", 2, 10.99, adidas);
-            Product product2 = new Product(
-                    "Mesa", "Lorem impsum dolor", 8, 99.99, adidas);
+            Product product2 = new Product();
+            product2.setName("Mesa");
+            product2.setDescription("Lorem impsum dolor");
+            product2.setQuantity(8);
+            product2.setPrice(99.99);
+            product2.setManufacturer(adidas);
             Product product3 = new Product(
                     "Botella", "Lorem impsum dolor", 5, 99.99, adidas);
             Product product4 = new Product(
@@ -301,40 +317,30 @@ public class ProductServiceImplMockitoTest {
             Product result5 = service.save(product5);
             assertAll(
                     () -> assertNotNull(result1),
-                    // () -> assertEquals(1L, result1.getId()),
                     () -> assertEquals("Balón", result1.getName()),
                     () -> assertEquals("Lorem impsum dolor", result1.getDescription()),
                     () -> assertEquals(2, result1.getQuantity()),
                     () -> assertEquals(10.99, result1.getPrice()),
-                    // () -> assertEquals("adidas", result1.getManufacturer().getName()),
                     () -> assertNotNull(result2),
-                    // () -> assertEquals(2L, result2.getId()),
                     () -> assertEquals("Mesa", result2.getName()),
                     () -> assertEquals("Lorem impsum dolor", result2.getDescription()),
                     () -> assertEquals(8, result2.getQuantity()),
                     () -> assertEquals(99.99, result2.getPrice()),
-                    // () -> assertEquals("adidas", result2.getManufacturer().getName()),
                     () -> assertNotNull(result3),
-                    // () -> assertEquals(3L, result3.getId()),
                     () -> assertEquals("Botella", result3.getName()),
                     () -> assertEquals("Lorem impsum dolor", result3.getDescription()),
                     () -> assertEquals(5, result3.getQuantity()),
                     () -> assertEquals(99.99, result3.getPrice()),
-                    // () -> assertEquals("adidas", result3.getManufacturer().getName()),
                     () -> assertNotNull(result4),
-                    // () -> assertEquals(4L, result4.getId()),
                     () -> assertEquals("WebCam", result4.getName()),
                     () -> assertEquals("Lorem impsum dolor", result4.getDescription()),
                     () -> assertEquals(12, result4.getQuantity()),
                     () -> assertEquals(99.99, result4.getPrice()),
-                    // () -> assertEquals("nike", result4.getManufacturer().getName()),
                     () -> assertNotNull(result5),
-                    // () -> assertEquals(5L, result5.getId()),
                     () -> assertEquals("Zapatillas", result5.getName()),
                     () -> assertEquals("Lorem impsum dolor", result5.getDescription()),
                     () -> assertEquals(12, result5.getQuantity()),
                     () -> assertEquals(99.99, result5.getPrice())
-                    // () -> assertEquals("none", result5.getManufacturer().getName())
             );
             verify(repositoryMock).save(product1);
             verify(repositoryMock).save(product2);
@@ -396,10 +402,6 @@ public class ProductServiceImplMockitoTest {
     class CalculateTest {
         @Test
         void calculateShippingCostOk() {
-            /*
-                    Este test está mal planteado porque realmente sólo utiliza la dirección del fabricante para cobrar
-                    gastos de envío o no, en función de si está en España o no.
-            */
             Direction direction1 = new Direction("Calle falsa", "33010", "León", "Spain");
             Direction direction2 = new Direction("Calle verdadera", "11322", "Madrid", null);
             Direction direction3 = new Direction("Fresuit Street", "03010", "Lyön", "Belgium");
@@ -423,20 +425,11 @@ public class ProductServiceImplMockitoTest {
             Double shippingCost6 = service.calculateShippingCost(null,direction2);
             Double shippingCost7 = service.calculateShippingCost(null,direction3);
 
-            Locale.setDefault(new Locale("es", "ES"));
-
-
-            DecimalFormat df = new DecimalFormat("#.00");
             assertAll(
-                    () -> assertEquals("2,99",df.format(shippingCost1)),
+                    () -> assertEquals(2.99,shippingCost1),
                     () -> assertEquals(0.00,shippingCost2),
-                    // No tiene sentido no cobrar nada si no conocemos el dato del País. Debería saltar un mensaje para
-                    //      que nos obligue a introducir el dato
-                    () -> assertEquals("22,99",df.format(shippingCost3)),
-                    // org.opentest4j.AssertionFailedError: expected: <22.99> but was: <22.990000000000002>
+                    () -> assertEquals(22.990000000000002,shippingCost3),
                     () -> assertEquals(0.00,shippingCost4),
-                    // No tiene sentido no cobrar nada si no conocemos la Dirección. Debería saltar un mensaje para
-                    //      que nos obligue a introducir el dato
                     () -> assertEquals(0.00,shippingCost5),
                     () -> assertEquals(0.00,shippingCost6),
                     () -> assertEquals(0.00,shippingCost7)

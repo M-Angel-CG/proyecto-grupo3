@@ -1,7 +1,5 @@
 package com.example.proyectotesting.service;
 
-
-
 import com.example.proyectotesting.entities.Direction;
 import com.example.proyectotesting.entities.Manufacturer;
 import com.example.proyectotesting.repository.ManufacturerRepository;
@@ -18,6 +16,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Testeo de los métodos presentes en la clase ManufacturerServiceImpl del package Service
+ */
 public class ManufacturerServiceImplMockitoTest {
 
     ManufacturerRepository repositoryMock;
@@ -45,8 +46,8 @@ public class ManufacturerServiceImplMockitoTest {
         @Test
         void findAllTest() {
             List<Manufacturer> manufacturers = Arrays.asList(
-                new Manufacturer("Adidas","2343235325G",60000,1949),
-                new Manufacturer("Nike","2343235325G",60000,1977)
+                    new Manufacturer("Adidas","2343235325G",60000,1949),
+                    new Manufacturer("Nike","2343235325G",60000,1977)
             );
             when(repositoryMock.findAll()).thenReturn(manufacturers);
             List<Manufacturer> result = service.findAll();
@@ -58,7 +59,11 @@ public class ManufacturerServiceImplMockitoTest {
         @Test
         void findOneOkTest() {
             Manufacturer adidas = new Manufacturer("Adididas","2343235325G",60000,1949);
-            Manufacturer nike = new Manufacturer("Nique","2658435325Y",78000,1977);
+            Manufacturer nike = new Manufacturer();
+            nike.setName("Nique");
+            nike.setCif("2658435325Y");
+            nike.setNumEmployees(78000);
+            nike.setYear(1977);
             when(repositoryMock.findById(1L)).thenReturn(Optional.of(adidas));
             when(repositoryMock.findById(2L)).thenReturn(Optional.of(nike));
             Optional<Manufacturer> result1 = service.findOne(1L);
@@ -128,7 +133,6 @@ public class ManufacturerServiceImplMockitoTest {
             );
             verify(repositoryMock).findById(anyLong());
         }
-
         @DisplayName("Buscar un fabricante por el año de su fundación")
         @Test
         void findByYearTest() {
@@ -173,7 +177,6 @@ public class ManufacturerServiceImplMockitoTest {
             verify(repositoryMock).findByYear(1977);
             verify(repositoryMock).findByYear(1997);
         }
-
         @DisplayName("Buscar un fabricante por el país")
         @Test
         void findByCountryTest() {
@@ -249,7 +252,11 @@ public class ManufacturerServiceImplMockitoTest {
         @Test
         void saveOkTest() {
             Manufacturer adidas = new Manufacturer("Adidas","2343235325G",60000,1949);
-            Manufacturer nike = new Manufacturer("Nike","2343235325G",60000,1977);
+            Manufacturer nike = new Manufacturer();
+            nike.setName("Nike");
+            nike.setCif("2343235325G");
+            nike.setNumEmployees(60000);
+            nike.setYear(1977);
             when(repositoryMock.save(adidas)).thenReturn(adidas);
             when(repositoryMock.save(nike)).thenReturn(nike);
             Manufacturer result1 = service.save(adidas);

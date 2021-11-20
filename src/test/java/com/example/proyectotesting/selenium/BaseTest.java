@@ -13,10 +13,10 @@ public class BaseTest {
 
     @BeforeEach
     void setUp() {
-        String dir=System.getProperty("user.dir");
-        String driverUrl="\\drivers\\chromedriver.exe";
-        String url=dir + driverUrl;
-        System.setProperty("webdriver.chrome.driver",url);
+        //String dir=System.getProperty("user.dir");
+        String driverUrl="drivers\\chromedriver.exe";
+        //String url=dir + driverUrl;
+        System.setProperty("webdriver.chrome.driver",driverUrl);
 
        driver= new ChromeDriver();
         js = (JavascriptExecutor) driver;

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -422,13 +423,16 @@ public class ProductServiceImplMockitoTest {
             Double shippingCost6 = service.calculateShippingCost(null,direction2);
             Double shippingCost7 = service.calculateShippingCost(null,direction3);
 
+            Locale.setDefault(new Locale("es", "ES"));
+
+
             DecimalFormat df = new DecimalFormat("#.00");
             assertAll(
-                    () -> assertEquals("2.99",df.format(shippingCost1)),
+                    () -> assertEquals("2,99",df.format(shippingCost1)),
                     () -> assertEquals(0.00,shippingCost2),
                     // No tiene sentido no cobrar nada si no conocemos el dato del País. Debería saltar un mensaje para
                     //      que nos obligue a introducir el dato
-                    () -> assertEquals("22.99",df.format(shippingCost3)),
+                    () -> assertEquals("22,99",df.format(shippingCost3)),
                     // org.opentest4j.AssertionFailedError: expected: <22.99> but was: <22.990000000000002>
                     () -> assertEquals(0.00,shippingCost4),
                     // No tiene sentido no cobrar nada si no conocemos la Dirección. Debería saltar un mensaje para

@@ -19,13 +19,13 @@ public class ProductController {
 
 	@Autowired
 	ProductRepository repository;
-	
+
 	@Autowired
 	ManufacturerRepository manufacturerRepository;
-	
+
 	@Autowired
 	CategoryRepository categoryRepository;
-	
+
 	@GetMapping
 	public String obtenerLista(Model model) {
 		// Recuperar productos de la base de datos utilizando repository
@@ -35,7 +35,7 @@ public class ProductController {
 		// Retornamos a la vista jsp
 		return "product-list";
 	}
-	
+
 	@GetMapping("/new")
 	public String obtenerFormulario(Model model) {
 		model.addAttribute("product", new Product());
@@ -43,18 +43,18 @@ public class ProductController {
 		model.addAttribute("categories", categoryRepository.findAll());
 		return "product-edit";
 	}
-	
+
 	@PostMapping
 	public String crearProducto(@ModelAttribute("product") Product product) {
 		repository.save(product);
 		return "redirect:/products";
 	}
-	
+
 	@GetMapping("/{id}/view")
 	public String verProducto(@PathVariable Long id, Model model) {
 		if(id == null) // 1. se comprueba que el id no sea nulo
 			return "redirect:/products";
-		
+
 		Optional<Product> productOpt = repository.findById(id);
 		if (productOpt.isPresent()) { // 2. se comprueba que existe un producto para ese id
 			model.addAttribute("product", productOpt.get());
@@ -63,12 +63,12 @@ public class ProductController {
 		model.addAttribute("error", "No existe el producto solicitado");
 		return "redirect:/products";
 	}
-	
+
 	@GetMapping("/{id}/edit")
 	public String editarProducto(@PathVariable Long id, Model model) {
 		if(id == null) // 1. se comprueba que el id no sea nulo
 			return "redirect:/products";
-		
+
 		Optional<Product> productOpt = repository.findById(id);
 		if (productOpt.isPresent()) { // 2. se comprueba que existe un producto para ese id
 			model.addAttribute("product", productOpt.get());
@@ -79,25 +79,23 @@ public class ProductController {
 		model.addAttribute("error", "No existe el producto solicitado");
 		return "redirect:/products";
 	}
-	
-	
+
 	@GetMapping("/{id}/delete")
 	public String borrarProducto(@PathVariable Long id) {
 		repository.deleteById(id);
 		return "redirect:/products";
 	}
-	
+
 	@GetMapping("/delete/all")
 	public String borrarProductos() {
 		repository.deleteAll();
 		return "redirect:/products";
 	}
-	
+
 	@GetMapping("/new/manufacturer/{id}")
 	public String formWithManufacturer(@PathVariable Long id, Model model) {
 		Manufacturer manufacturer = manufacturerRepository.findById(id).get();
 		model.addAttribute("manufacturer", manufacturer);
 		return "product-edit-withmanufacturer";
 	}
-
 }

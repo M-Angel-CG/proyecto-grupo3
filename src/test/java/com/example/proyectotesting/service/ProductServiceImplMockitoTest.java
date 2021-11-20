@@ -424,11 +424,11 @@ public class ProductServiceImplMockitoTest {
 
             DecimalFormat df = new DecimalFormat("#.00");
             assertAll(
-                    () -> assertEquals("2,99",df.format(shippingCost1)),
+                    () -> assertEquals("2.99",df.format(shippingCost1)),
                     () -> assertEquals(0.00,shippingCost2),
                     // No tiene sentido no cobrar nada si no conocemos el dato del País. Debería saltar un mensaje para
                     //      que nos obligue a introducir el dato
-                    () -> assertEquals("22,99",df.format(shippingCost3)),
+                    () -> assertEquals("22.99",df.format(shippingCost3)),
                     // org.opentest4j.AssertionFailedError: expected: <22.99> but was: <22.990000000000002>
                     () -> assertEquals(0.00,shippingCost4),
                     // No tiene sentido no cobrar nada si no conocemos la Dirección. Debería saltar un mensaje para

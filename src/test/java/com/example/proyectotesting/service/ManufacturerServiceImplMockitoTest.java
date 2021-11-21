@@ -3,6 +3,7 @@ package com.example.proyectotesting.service;
 import com.example.proyectotesting.entities.Direction;
 import com.example.proyectotesting.entities.Manufacturer;
 import com.example.proyectotesting.repository.ManufacturerRepository;
+import com.example.proyectotesting.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,19 +22,21 @@ import static org.mockito.Mockito.*;
  */
 public class ManufacturerServiceImplMockitoTest {
 
-    ManufacturerRepository repositoryMock;
+    ManufacturerRepository manufacturerrepositoryMock;
+    ProductRepository productrepositoryMock;
     ManufacturerServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        repositoryMock = mock(ManufacturerRepository.class);
-        service = new ManufacturerServiceImpl(repositoryMock);
+        manufacturerrepositoryMock = mock(ManufacturerRepository.class);
+        productrepositoryMock = mock(ProductRepository.class);
+        service = new ManufacturerServiceImpl(manufacturerrepositoryMock,productrepositoryMock);
     }
 
     @DisplayName("Contar el número de fabricantes")
     @Test
     void count() {
-        when(repositoryMock.count()).thenReturn(2l);
+        when(manufacturerrepositoryMock.count()).thenReturn(2l);
         Long result = service.count();
         assertNotNull(result);
         assertEquals(2, result);
@@ -49,11 +52,11 @@ public class ManufacturerServiceImplMockitoTest {
                     new Manufacturer("Adidas","2343235325G",60000,1949),
                     new Manufacturer("Nike","2343235325G",60000,1977)
             );
-            when(repositoryMock.findAll()).thenReturn(manufacturers);
+            when(manufacturerrepositoryMock.findAll()).thenReturn(manufacturers);
             List<Manufacturer> result = service.findAll();
             assertNotNull(result);
             assertEquals(2, result.size());
-            verify(repositoryMock).findAll();
+            verify(manufacturerrepositoryMock).findAll();
         }
         @DisplayName("OPTIONAL - Buscar un fabricante con un id conocido")
         @Test
@@ -64,8 +67,8 @@ public class ManufacturerServiceImplMockitoTest {
             nike.setCif("2658435325Y");
             nike.setNumEmployees(78000);
             nike.setYear(1977);
-            when(repositoryMock.findById(1L)).thenReturn(Optional.of(adidas));
-            when(repositoryMock.findById(2L)).thenReturn(Optional.of(nike));
+            when(manufacturerrepositoryMock.findById(1L)).thenReturn(Optional.of(adidas));
+            when(manufacturerrepositoryMock.findById(2L)).thenReturn(Optional.of(nike));
             Optional<Manufacturer> result1 = service.findOne(1L);
             Optional<Manufacturer> result2 = service.findOne(2L);
             assertAll(
@@ -80,14 +83,14 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals(78000,result2.get().getNumEmployees()),
                     () -> assertEquals(1977,result2.get().getYear())
             );
-            verify(repositoryMock).findById(1L);
-            verify(repositoryMock).findById(2L);
+            verify(manufacturerrepositoryMock).findById(1L);
+            verify(manufacturerrepositoryMock).findById(2L);
         }
         @DisplayName("OPTIONAL - Buscar un fabricante con cualquier id conocido")
         @Test
         void findAnyTest() {
             Manufacturer adidas = new Manufacturer("Adididas","2343235325G",60000,1949);
-            when(repositoryMock.findById(anyLong())).thenReturn(Optional.of(adidas));
+            when(manufacturerrepositoryMock.findById(anyLong())).thenReturn(Optional.of(adidas));
             Optional<Manufacturer> result1 = service.findOne(1L);
             assertAll(
                     () -> assertTrue(result1.isPresent()),
@@ -96,33 +99,33 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals(60000,result1.get().getNumEmployees()),
                     () -> assertEquals(1949,result1.get().getYear())
             );
-            verify(repositoryMock).findById(anyLong());
+            verify(manufacturerrepositoryMock).findById(anyLong());
         }
         @DisplayName("OPTIONAL - Buscar un fabricante con un id < 0")
         @Test
         void findOneNegativeTest() {
-            when(repositoryMock.findById(anyLong())).thenThrow(IllegalArgumentException.class);
+            when(manufacturerrepositoryMock.findById(anyLong())).thenThrow(IllegalArgumentException.class);
             Optional<Manufacturer> manufacturerOpt = service.findOne(-9L);
             assertAll(
                     () -> assertTrue(manufacturerOpt.isEmpty())
             );
-            verifyNoInteractions(repositoryMock);
+            verifyNoInteractions(manufacturerrepositoryMock);
         }
         @DisplayName("OPTIONAL - Buscar un fabricante con un id nulo")
         @Test
         void findOneNullTest() {
-            when(repositoryMock.findById(anyLong())).thenThrow(IllegalArgumentException.class);
+            when(manufacturerrepositoryMock.findById(anyLong())).thenThrow(IllegalArgumentException.class);
             Optional<Manufacturer> manufacturerOpt = service.findOne(null);
             assertAll(
                     () -> assertTrue(manufacturerOpt.isEmpty())
             );
-            verifyNoInteractions(repositoryMock);
+            verifyNoInteractions(manufacturerrepositoryMock);
         }
         @DisplayName("OPTIONAL - Buscar un fabricante con un id que no existe en la base de datos")
         @Test
         void findOneNotContainsTest() {
             Manufacturer adidas = new Manufacturer("Adididas","2343235325G",60000,1949);
-            when(repositoryMock.findById(anyLong())).thenReturn(Optional.of(adidas));
+            when(manufacturerrepositoryMock.findById(anyLong())).thenReturn(Optional.of(adidas));
             Optional<Manufacturer> result1 = service.findOne(999L);
             assertAll(
                     () -> assertTrue(result1.isPresent()),
@@ -131,7 +134,7 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals(60000,result1.get().getNumEmployees()),
                     () -> assertEquals(1949,result1.get().getYear())
             );
-            verify(repositoryMock).findById(anyLong());
+            verify(manufacturerrepositoryMock).findById(anyLong());
         }
         @DisplayName("Buscar un fabricante por el año de su fundación")
         @Test
@@ -147,9 +150,9 @@ public class ManufacturerServiceImplMockitoTest {
             List<Manufacturer> manufacturers3 = Arrays.asList(
                     new Manufacturer("D´metrio","2351478951W",25000,1997)
             );
-            when(repositoryMock.findByYear(1949)).thenReturn(manufacturers1);
-            when(repositoryMock.findByYear(1977)).thenReturn(manufacturers2);
-            when(repositoryMock.findByYear(1997)).thenReturn(manufacturers3);
+            when(manufacturerrepositoryMock.findByYear(1949)).thenReturn(manufacturers1);
+            when(manufacturerrepositoryMock.findByYear(1977)).thenReturn(manufacturers2);
+            when(manufacturerrepositoryMock.findByYear(1997)).thenReturn(manufacturers3);
             List<Manufacturer> manufacturersOne = service.findByYear(1949);
             List<Manufacturer> manufacturersTwo = service.findByYear(1977);
             List<Manufacturer> manufacturersThree = service.findByYear(1997);
@@ -173,9 +176,9 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals("2351478951W",manufacturersThree.get(0).getCif()),
                     () -> assertEquals(25000,manufacturersThree.get(0).getNumEmployees())
             );
-            verify(repositoryMock).findByYear(1949);
-            verify(repositoryMock).findByYear(1977);
-            verify(repositoryMock).findByYear(1997);
+            verify(manufacturerrepositoryMock).findByYear(1949);
+            verify(manufacturerrepositoryMock).findByYear(1977);
+            verify(manufacturerrepositoryMock).findByYear(1997);
         }
         @DisplayName("Buscar un fabricante por el país")
         @Test
@@ -206,9 +209,9 @@ public class ManufacturerServiceImplMockitoTest {
             List<Manufacturer> manufacturers3 = new ArrayList<>();
             manufacturers3.add(0,pompin);
 
-            when(repositoryMock.findManufacturerByDirectionCountry("Spain")).thenReturn(manufacturers1);
-            when(repositoryMock.findManufacturerByDirectionCountry("France")).thenReturn(manufacturers2);
-            when(repositoryMock.findManufacturerByDirectionCountry("Morocco")).thenReturn(manufacturers3);
+            when(manufacturerrepositoryMock.findManufacturerByDirectionCountry("Spain")).thenReturn(manufacturers1);
+            when(manufacturerrepositoryMock.findManufacturerByDirectionCountry("France")).thenReturn(manufacturers2);
+            when(manufacturerrepositoryMock.findManufacturerByDirectionCountry("Morocco")).thenReturn(manufacturers3);
 
             List<Manufacturer> manufacturersOne = service.findManufacturerByCountry("Spain");
             List<Manufacturer> manufacturersTwo = service.findManufacturerByCountry("France");
@@ -239,9 +242,9 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals("89534",manufacturersThree.get(0).getDirection().getPostalCode()),
                     () -> assertEquals("Rabat",manufacturersThree.get(0).getDirection().getCity())
             );
-            verify(repositoryMock).findManufacturerByDirectionCountry("Spain");
-            verify(repositoryMock).findManufacturerByDirectionCountry("France");
-            verify(repositoryMock).findManufacturerByDirectionCountry("Morocco");
+            verify(manufacturerrepositoryMock).findManufacturerByDirectionCountry("Spain");
+            verify(manufacturerrepositoryMock).findManufacturerByDirectionCountry("France");
+            verify(manufacturerrepositoryMock).findManufacturerByDirectionCountry("Morocco");
         }
     }
 
@@ -257,8 +260,8 @@ public class ManufacturerServiceImplMockitoTest {
             nike.setCif("2343235325G");
             nike.setNumEmployees(60000);
             nike.setYear(1977);
-            when(repositoryMock.save(adidas)).thenReturn(adidas);
-            when(repositoryMock.save(nike)).thenReturn(nike);
+            when(manufacturerrepositoryMock.save(adidas)).thenReturn(adidas);
+            when(manufacturerrepositoryMock.save(nike)).thenReturn(nike);
             Manufacturer result1 = service.save(adidas);
             Manufacturer result2 = service.save(nike);
             assertAll(
@@ -273,18 +276,18 @@ public class ManufacturerServiceImplMockitoTest {
                     () -> assertEquals(60000, result2.getNumEmployees()),
                     () -> assertEquals(1977, result2.getYear())
             );
-            verify(repositoryMock).save(adidas);
-            verify(repositoryMock).save(nike);
+            verify(manufacturerrepositoryMock).save(adidas);
+            verify(manufacturerrepositoryMock).save(nike);
         }
         @DisplayName("Guardar un fabricante nulo")
         @Test
         void saveNullTest() {
-            when(repositoryMock.save(null)).thenThrow(IllegalArgumentException.class);
+            when(manufacturerrepositoryMock.save(null)).thenThrow(IllegalArgumentException.class);
             Manufacturer result1 = service.save(null);
             assertAll(
                     () -> assertNull(result1)
             );
-            verifyNoInteractions(repositoryMock);
+            verifyNoInteractions(manufacturerrepositoryMock);
         }
     }
 
@@ -300,38 +303,38 @@ public class ManufacturerServiceImplMockitoTest {
         @Test
         @DisplayName("Borrar un fabricante de id negativo")
         void deleteNegativeTest(){
-            doThrow(RuntimeException.class).when(repositoryMock).deleteById(anyLong());
+            doThrow(RuntimeException.class).when(manufacturerrepositoryMock).deleteById(anyLong());
             boolean result = service.deleteById(-9L);
             assertFalse(result);
-            assertThrows(Exception.class, () -> repositoryMock.deleteById(-9L));
-            verify(repositoryMock).deleteById(anyLong());
+            assertThrows(Exception.class, () -> manufacturerrepositoryMock.deleteById(-9L));
+            verify(manufacturerrepositoryMock).deleteById(anyLong());
         }
         @Test
         @DisplayName("Borrar un fabricante de id no incluido en la base de datos")
         void deleteNotContainsTest(){
-            doThrow(RuntimeException.class).when(repositoryMock).deleteById(anyLong());
+            doThrow(RuntimeException.class).when(manufacturerrepositoryMock).deleteById(anyLong());
             boolean result = service.deleteById(999L);
             assertFalse(result);
-            assertThrows(Exception.class, () -> repositoryMock.deleteById(999L));
-            verify(repositoryMock).deleteById(anyLong());
+            assertThrows(Exception.class, () -> manufacturerrepositoryMock.deleteById(999L));
+            verify(manufacturerrepositoryMock).deleteById(anyLong());
         }
         @Test
         @DisplayName("Borrar un fabricante de id conocido")
         void deleteByIdOkTest(){
-            doThrow(RuntimeException.class).when(repositoryMock).deleteById(anyLong());
+            doThrow(RuntimeException.class).when(manufacturerrepositoryMock).deleteById(anyLong());
             boolean result = service.deleteById(anyLong());
             assertFalse(result);
-            assertThrows(Exception.class, () -> repositoryMock.deleteById(anyLong()));
-            verify(repositoryMock).deleteById(anyLong());
+            assertThrows(Exception.class, () -> manufacturerrepositoryMock.deleteById(anyLong()));
+            verify(manufacturerrepositoryMock).deleteById(anyLong());
         }
         @Test
         @DisplayName("Borrar todos los fabricantes")
         void deleteAllTest(){
-            doThrow(RuntimeException.class).when(repositoryMock).deleteAll();
+            doThrow(RuntimeException.class).when(manufacturerrepositoryMock).deleteAll();
             boolean result = service.deleteAll();
             assertFalse(result);
-            assertThrows(Exception.class, () -> repositoryMock.deleteAll());
-            verify(repositoryMock,times(2)).deleteAll();
+            assertThrows(Exception.class, () -> manufacturerrepositoryMock.deleteAll());
+            verify(manufacturerrepositoryMock,times(2)).deleteAll();
         }
     }
 }

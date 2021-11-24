@@ -17,8 +17,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+          server-id: github
+          settings-path: ${{ github.workspace }}
+      - name:  Install Google Chrome
+        run:   |
+          chmod +x ./scripts/InstallChrome.sh
+                      ./scripts/InstallChrome.sh
       - name: Cache SonarCloud packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar

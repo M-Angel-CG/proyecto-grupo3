@@ -13,6 +13,20 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proyecto-testing</name>
 	<description>Demo project for Spring Boot</description>
+	<developers>
+		<developer>
+			<name>Miguel Ángel</name>
+		</developer>
+		<developer>
+			<name>Francisco</name>
+		</developer>
+		<developer>
+			<name>Gonzalo</name>
+		</developer>
+		<developer>
+			<name>Jorge</name>
+		</developer>
+	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>

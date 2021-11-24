@@ -16,10 +16,11 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     private ManufacturerRepository manufacturerRepository;
     private ProductRepository productRepository;
 
-    public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository){
+    public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository, ProductRepository productRepository){
         this.manufacturerRepository = manufacturerRepository;
         this.productRepository = productRepository;
     }
+
 
     @Override
     public List<Manufacturer> findAll() {
@@ -101,6 +102,8 @@ public class ManufacturerServiceImpl implements ManufacturerService {
             e.printStackTrace();
         }
         return false;
+
+
     }
 
     @Override
@@ -110,7 +113,6 @@ public class ManufacturerServiceImpl implements ManufacturerService {
             return result;
         return manufacturerRepository.findManufacturerByDirectionCountry(country);
     }
-
     @Override
     public boolean deleteAll() {
         try{

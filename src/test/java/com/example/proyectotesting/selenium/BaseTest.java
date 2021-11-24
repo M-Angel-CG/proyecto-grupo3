@@ -8,7 +8,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-
 public class BaseTest {
 
     WebDriver driver;
@@ -17,12 +16,13 @@ public class BaseTest {
     @BeforeEach
     void setUp() {
 
+        String os = System.getProperty("os.name");
 
+        boolean isNix = (os.contains("nix")
+                || os.contains("nux")
+                || os.contains("aix"));
 
-        System.getenv().forEach((key, value) -> System.out.println(key + " " + value));
-        System.getProperties().forEach((key, value) -> System.out.println(key + " " + value));
-
-        if(System.getProperties().get("os.name").equals("Linux")){
+        if(isNix){
             System.out.println("Configurando Navegador Chrome Headless para CI");
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
@@ -30,6 +30,7 @@ public class BaseTest {
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--headless");
             driver = new ChromeDriver(options);
+            js = (JavascriptExecutor) driver;
         }else{
             System.out.println("Configurando Navegador Chrome desde carpeta drivers para testing en desarrollo");
             //String dir = System.getProperty("user.dir"); // ruta del proyecto
@@ -37,6 +38,7 @@ public class BaseTest {
             //String url = dir + driverUrl;
             System.setProperty("webdriver.chrome.driver", driverUrl);
             driver = new ChromeDriver(); // Google Chrome
+            js = (JavascriptExecutor) driver;
         }
     }
 
@@ -44,6 +46,7 @@ public class BaseTest {
     void tearDown() {
         driver.quit();
     }
+
 
 
 }

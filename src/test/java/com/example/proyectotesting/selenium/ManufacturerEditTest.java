@@ -21,7 +21,7 @@ public class ManufacturerEditTest extends BaseTest{
 
     @Test
     @DisplayName("Titulo del fabricante")
-    void CheckTitleAdidasTextTest() {
+    void CheckTitle() {
 
         driver.get(URL);
 
@@ -40,28 +40,6 @@ public class ManufacturerEditTest extends BaseTest{
         assertEquals("Manufacturer List | Awesome App", driver.getTitle());
     }
 
-    @Test
-    @DisplayName("Seleccionar producto del menu")
-    void selectProduct() {
-
-        driver.get(URL);
-
-        WebElement input = driver.findElement(By.xpath("//option[@value='13']"));
-        input.click();
-
-        assertTrue(driver.findElement(By.xpath("//option[@value='13']")).isSelected());
-
-
-    }
-    public void scrollTo(WebElement element){
-        js.executeScript("arguments[0].scrollIntoView();", element);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Test
     @DisplayName("Seleccionar todos productos del menu")
@@ -72,6 +50,8 @@ public class ManufacturerEditTest extends BaseTest{
 
         List<WebElement> options = driver.findElements(By.xpath("//*[@id=\"products\"]"));
         WebElement button = driver.findElement(By.xpath("//button[@type='submit']"));
+
+        //metodo propio para hacer scroll y esperar
         scrollTo(button);
 
         for (WebElement option: options) {
@@ -81,6 +61,20 @@ public class ManufacturerEditTest extends BaseTest{
 
         button.submit();
 
+    }
+
+    @Test
+    @DisplayName("comprobar los titulos de el manufacturer")
+    void Titles() {
+        driver.get(URL);
+        driver.manage().window().maximize();
+
+        List<WebElement> data = driver.findElements(By.cssSelector("h2"));
+        assertEquals("Fabricante 1",data.get(0).getText());
+        List<WebElement> dataTitle = driver.findElements(By.cssSelector("h3"));
+        assertEquals("Datos de fabricante",dataTitle.get(0).getText());
+        assertEquals("Datos de dirección",dataTitle.get(1).getText());
+        assertEquals("Productos disponibles",dataTitle.get(2).getText());
     }
 }
 

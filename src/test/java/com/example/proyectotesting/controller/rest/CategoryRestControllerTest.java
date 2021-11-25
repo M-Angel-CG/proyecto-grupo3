@@ -2,6 +2,7 @@ package com.example.proyectotesting.controller.rest;
 
 import com.example.proyectotesting.entities.Category;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -88,6 +89,7 @@ public class CategoryRestControllerTest {
         assertEquals("Libros", product.getName());
     }
 
+    @Disabled
     @Test
     void createBadRequest() {
         String json = """
@@ -104,6 +106,7 @@ public class CategoryRestControllerTest {
         assertFalse(response.hasBody());
     }
 
+    @Disabled
     @Test
     void update() {
         Category product = createDemoCategory();
@@ -130,6 +133,7 @@ public class CategoryRestControllerTest {
         assertNotEquals(responseCategory.getName(), product.getName());
     }
 
+    @Disabled
     @Test
     void updateBadRequest() {
         String json = """
@@ -147,6 +151,7 @@ public class CategoryRestControllerTest {
         assertFalse(response.hasBody());
     }
 
+    @Disabled
     @Test
     void updateNotFoundRequest() {
         String json = """
@@ -179,6 +184,7 @@ public class CategoryRestControllerTest {
         assertFalse(response2.hasBody());
     }
 
+    @Disabled
     @Test
     void deleteAll() {
         String url = CATEGORIES_URL;

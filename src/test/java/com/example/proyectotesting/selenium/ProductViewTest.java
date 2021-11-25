@@ -1,5 +1,6 @@
 package com.example.proyectotesting.selenium;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -14,12 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  *  Tests de los elementos de la vista product-view.
  */
 
-
+@Disabled
 public class ProductViewTest extends BaseTest{
 
     //private static final String URL="http://testing-alansastre.herokuapp.com/products/9/view";
     private static final String URL="http://localhost:8080/products/9/view";
 
+    @Disabled
     @Test
     @DisplayName("Titulo Products")
     void tituloTest(){
@@ -30,6 +32,7 @@ public class ProductViewTest extends BaseTest{
         assertEquals("Producto 9",driver.findElement(By.cssSelector("body > div > h2")).getText());
     }
 
+    @Disabled
     @Test
     @DisplayName("Testeo de la Vista del producto")
     void productsTableTest() {
@@ -63,6 +66,7 @@ public class ProductViewTest extends BaseTest{
         assertEquals("Computación", driver.findElement(By.cssSelector("body > div > div > div > ul > li:nth-child(2) > span")).getText());
     }
 
+    @Disabled
     @Test
     void returnTest() {
         driver.manage().window().maximize();
@@ -87,6 +91,7 @@ public class ProductViewTest extends BaseTest{
         assertEquals("http://localhost:8080/products/9/edit", driver.getCurrentUrl());
     }
 
+    @Disabled
     @Test
     void deleteProductTest() {
         driver.manage().window().maximize();

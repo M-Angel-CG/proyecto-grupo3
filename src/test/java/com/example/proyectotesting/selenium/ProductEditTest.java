@@ -1,5 +1,6 @@
 package com.example.proyectotesting.selenium;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -17,6 +18,7 @@ public class ProductEditTest extends BaseTest {
     //private static final String URL="http://testing-alansastre.herokuapp.com/products/10/edit";
     private static final String URL="http://localhost:8080/products/10/edit";
 
+    @Disabled
     @Test
     @DisplayName("Título")
     void tituloPáginaTest(){
@@ -27,6 +29,7 @@ public class ProductEditTest extends BaseTest {
         assertEquals("Product 10", (driver.findElement(By.cssSelector("body > div > h2"))).getText());
     }
 
+    @Disabled
     @Test
     void notModifyTest() {
         driver.get(URL);
@@ -74,6 +77,7 @@ public class ProductEditTest extends BaseTest {
                         By.cssSelector("body > div > table > tbody > tr:nth-child(3) > td:nth-child(5)")).getText()));
     }
 
+    @Disabled
     @Test
     void modifyTest () throws InterruptedException {
         driver.get(URL);

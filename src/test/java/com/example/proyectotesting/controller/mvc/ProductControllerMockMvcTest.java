@@ -1,5 +1,6 @@
 package com.example.proyectotesting.controller.mvc;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ class ProductControllerMockMvcTest {
                 .andExpect(status().is3xxRedirection());
     }
 
+    @Disabled
     @Test
     void viewProductOkTest() throws Exception {
         mvc.perform(get("/products/11/view"))

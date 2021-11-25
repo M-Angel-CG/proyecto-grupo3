@@ -3,6 +3,7 @@ package com.example.proyectotesting.controller.rest;
 import com.example.proyectotesting.entities.Direction;
 import com.example.proyectotesting.entities.Manufacturer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -114,6 +115,7 @@ public class DirectionRestControllerTest {
         //          Actual   :200
     }
 
+    @Disabled
     @Test
     void update() {
         String url = DIRECTIONS_URL;
@@ -141,6 +143,7 @@ public class DirectionRestControllerTest {
         assertNotEquals(responseDirection.getStreet(), direction.getStreet());
     }
 
+    @Disabled
     @Test
     void updateBadRequest() {
         String json = """
@@ -160,6 +163,7 @@ public class DirectionRestControllerTest {
         assertFalse(response.hasBody());
     }
 
+    @Disabled
     @Test
     void updateNotFoundRequest() {
         String json = """
@@ -180,6 +184,7 @@ public class DirectionRestControllerTest {
 
     }
 
+    @Disabled
     @Test
     void deleteById() {
         Direction directions = createDemoDirection();
@@ -196,6 +201,7 @@ public class DirectionRestControllerTest {
         assertFalse(response2.hasBody());
     }
 
+    @Disabled
     @Test
     void deleteAll() {
         String url = DIRECTIONS_URL;

@@ -2,6 +2,7 @@ package com.example.proyectotesting.controller.rest;
 
 import com.example.proyectotesting.entities.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -181,6 +182,7 @@ public class ProductRestControllerTest {
         assertFalse(response.hasBody());
     }
 
+    @Disabled
     @Test
     void updateNotFoundRequest() {
         String json = """

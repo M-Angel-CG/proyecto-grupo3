@@ -83,6 +83,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -97,6 +98,7 @@
 			<artifactId>selenium-java</artifactId>
 			<version>3.141.59</version>
 		</dependency>
+
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
@@ -199,7 +201,6 @@
 
 	<build>
 		<plugins>
-
 			<!--            Actualizamos la version de maven-compiler-plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -262,11 +263,7 @@
 						</configuration>
 					</execution>
 				</executions>
-
 			</plugin>
-
-
-
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -306,6 +303,7 @@
 				</configuration>
 			</plugin>
 
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -318,7 +316,6 @@
 				<version>3.0.0-M5</version>
 			</plugin>
 
-			<!--            https://www.eclemma.org/jacoco/trunk/doc/maven.html -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -337,13 +334,8 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-
 				</executions>
-
 			</plugin>
-
-
-
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -382,9 +374,8 @@
 					</compileSourceRoots>
 				</configuration>
 			</plugin>
-
+			-->
 
 		</plugins>
 	</build>
-
 </project>

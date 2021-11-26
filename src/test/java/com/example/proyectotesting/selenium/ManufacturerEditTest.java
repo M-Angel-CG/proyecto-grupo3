@@ -1,6 +1,7 @@
 package com.example.proyectotesting.selenium;
 
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,6 +13,7 @@ import org.openqa.selenium.interactions.Actions;
 import java.util.List;
 
 
+@Disabled
 public class ManufacturerEditTest extends BaseTest{
 
 

@@ -1,7 +1,6 @@
 package com.example.proyectotesting.controller.mvc;
 
 import com.example.proyectotesting.entities.Manufacturer;
-import com.example.proyectotesting.repository.ManufacturerRepository;
 import com.example.proyectotesting.service.ManufacturerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,7 @@ public class ManufacturerControllerTest {
                 .andExpect(model().attributeExists("products"))
                 .andExpect(forwardedUrl("/WEB-INF/views/manufacturer-edit.jsp"));
 
-        mvc.perform(get("/manufacturers/20/edit"))
+        mvc.perform(get("/manufacturers/90/edit"))
                 .andExpect(model().attributeExists("NOTIFICATION"))
                 .andExpect(model().attributeExists("manufacturers"))
                 .andExpect(forwardedUrl("/WEB-INF/views/manufacturer-list.jsp"));
